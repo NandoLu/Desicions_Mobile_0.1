@@ -61,6 +61,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
   },
+  error:{
+    fontSize: 15,
+  },
 });
 
 export default styles;

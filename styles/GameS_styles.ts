@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#333333', // Fundo cinza escuro
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
   },
   nav: {
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   dateBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     width: '100%',
     padding: 10,
     backgroundColor: '#222222',
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   },
   advanceButton: {
     position: 'absolute',
-    bottom: 110,
+    bottom: 10,
     right: 10,
     backgroundColor: '#007BFF',
     padding: 10,
@@ -78,6 +78,27 @@ const styles = StyleSheet.create({
   footerButtonImage: {
     width: 50,
     height: 50,
+  },
+  buttonGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  gridButton: {
+    width: '30%',
+    alignItems: 'center',
+    margin: 5,
+
+  },
+  gridButtonImage: {
+    width: 50,
+    height: 50,
+  },
+  gridButtonText: {
+    fontSize: 10,
+    color: '#FFFFFF',
+    marginTop: 5,
   },
   modalContainer: {
     flex: 1,
