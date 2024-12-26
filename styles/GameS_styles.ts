@@ -27,35 +27,38 @@ const styles = StyleSheet.create({
     height: 50,
   },
   pib: {
-    fontSize: 18,
+    fontSize: 10,
     color: '#FFFFFF',
     marginLeft: 10,
   },
   dateBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     width: '100%',
     padding: 10,
     backgroundColor: '#222222',
     position: 'absolute',
-    bottom: 60,
+    bottom: 70,
   },
   date: {
-    fontSize: 18,
+    fontSize: 10,
     color: '#FFFFFF',
   },
   advanceButton: {
+    position: 'absolute',
+    bottom: 110,
+    right: 10,
     backgroundColor: '#007BFF',
     padding: 10,
     borderRadius: 5,
   },
   advanceButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 10,
   },
   title: {
-    fontSize: 20,
+    fontSize: 10,
     color: '#FFFFFF',
     textAlign: 'center',
     marginTop: 100,
@@ -75,6 +78,33 @@ const styles = StyleSheet.create({
   footerButtonImage: {
     width: 50,
     height: 50,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#FFFFFF',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  modalImage: {
+    width: 100,
+    height: 60,
+    marginBottom: 10,
+  },
+  modalText: {
+    fontSize: 14,
+    marginBottom: 10,
   },
 });
 
