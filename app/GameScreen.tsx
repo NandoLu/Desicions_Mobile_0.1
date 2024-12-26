@@ -39,17 +39,24 @@ const GameScreen = () => {
     country,
     leader,
     saldoEconomia: 0,
-    popularidade: 51,
+    popularidade: 15,
   });
   const [date, setDate] = useState({ year: 1940, month: 1 });
   const [statsModalVisible, setStatsModalVisible] = useState(false);
   const [councilModalVisible, setCouncilModalVisible] = useState(false);
   const [impostoModalVisible, setImpostoModalVisible] = useState(false);
   const [educacaoModalVisible, setEducacaoModalVisible] = useState(false);
+  const [receitaImposto, setReceitaImposto] = useState(0);
+  const [despesaEducacao, setDespesaEducacao] = useState(0);
+  const [impactoPopularidadeImposto, setImpactoPopularidadeImposto] = useState(0);
+  const [impactoPopularidadeEducacao, setImpactoPopularidadeEducacao] = useState(0);
+  const [popularidadeTotal, setPopularidadeTotal] = useState(51);
   const [impostoPobre, setImpostoPobre] = useState(0);
   const [impostoMedio, setImpostoMedio] = useState(0);
   const [impostoRico, setImpostoRico] = useState(0);
   const [educacaoPrimaria, setEducacaoPrimaria] = useState(0);
+  const [ensinoMedio, setEnsinoMedio] = useState(0);
+  const [ensinoSuperior, setEnsinoSuperior] = useState(0);
   const [impostoSliderLocked, setImpostoSliderLocked] = useState(false);
   const [educacaoSliderLocked, setEducacaoSliderLocked] = useState(false);
   const [saldoEconomia, setSaldoEconomia] = useState(0);
@@ -57,41 +64,41 @@ const GameScreen = () => {
 
   useEffect(() => {
     const initializeGame = async () => {
-      try {
-        const savedGame = await loadGame();
-        const savedSliders = await loadSliderValues();
-        if (savedGame) {
-          setGameData(savedGame);
-          setDate(savedGame.date || { year: 1940, month: 1 });
-          setSaldoEconomia(savedGame.saldoEconomia || 0);
-          setPopularidade(savedGame.popularidade || 51);
-        } else {
-          console.warn('Nenhum jogo salvo encontrado.');
-        }
-
-        if (savedSliders) {
-          setImpostoPobre(savedSliders.impostoPobre || 0);
-          setEducacaoPrimaria(savedSliders.educacaoPrimaria || 0);
-        }
-      } catch (error) {
-        console.error('Erro ao inicializar o jogo:', error);
+      const savedGame = await loadGame();
+      const savedSliders = await loadSliderValues();
+      if (savedGame) {
+        setGameData(savedGame);
+        setDate(savedGame.date || { year: 1940, month: 1 });
+        setSaldoEconomia(savedGame.saldoEconomia || 0);
+        setPopularidade(savedGame.popularidade || 0);
       }
+      setImpostoPobre(savedSliders.impostoPobre);
+      setImpostoMedio(savedSliders.impostoMedio);
+      setImpostoRico(savedSliders.impostoRico);
+      setEducacaoPrimaria(savedSliders.educacaoPrimaria);
+      setEnsinoMedio(savedSliders.ensinoMedio);
+      setEnsinoSuperior(savedSliders.ensinoSuperior);
+
+      // Executar a função de cada modal contida no botão "Salvar"
+      calcularReceitaImpactoPopularidadeImposto(savedSliders.impostoPobre * 5 + savedSliders.impostoMedio * 10 + savedSliders.impostoRico * 15, 5 - (savedSliders.impostoPobre * 0.5 + savedSliders.impostoMedio * 0.75 + savedSliders.impostoRico * 1));
+      calcularDespesaImpactoPopularidadeEducacao(savedSliders.educacaoPrimaria * -5 + savedSliders.ensinoMedio * -10 + savedSliders.ensinoSuperior * -15, savedSliders.educacaoPrimaria * 2 + savedSliders.ensinoMedio * 3 + savedSliders.ensinoSuperior * 4 - 5);
     };
 
     initializeGame();
   }, []);
+
 
   const handleAdvanceTurn = async () => {
     const newDate = advanceTurn(date);
     setDate(newDate);
 
     const updatedGameData = { ...gameData, date: newDate };
-    const { receita, despesas, saldoFinal, popularidade } = calculateEconomy(impostoPobre, educacaoPrimaria);
+    const { saldoFinal, popularidade } = calculateEconomy(saldoEconomia, receitaImposto, despesaEducacao, popularidadeTotal + impactoPopularidadeImposto + impactoPopularidadeEducacao);
     updatedGameData.saldoEconomia = saldoFinal;
     updatedGameData.popularidade = popularidade;
 
     setSaldoEconomia(saldoFinal);
-    setPopularidade(popularidade);
+    setPopularidadeTotal(popularidade);
     setGameData(updatedGameData);
     await saveGame(updatedGameData);
 
@@ -99,20 +106,36 @@ const GameScreen = () => {
     setEducacaoSliderLocked(false);
   };
 
+
+
   const handleSaveImposto = async (pobre: number, medio: number, rico: number) => {
     setImpostoPobre(pobre);
     setImpostoMedio(medio);
     setImpostoRico(rico);
-    await saveSliderValues(pobre, medio, rico, educacaoPrimaria);
+    await saveSliderValues(pobre, medio, rico, educacaoPrimaria, ensinoMedio, ensinoSuperior);
     setImpostoSliderLocked(true);
-  };  
+  };
+
+  const calcularReceitaImpactoPopularidadeImposto = (receita: number, impactoPopularidade: number) => {
+    setReceitaImposto(receita);
+    setImpactoPopularidadeImposto(impactoPopularidade);
+  };
 
 
-  const handleSaveEducacao = async (value: number) => {
-    setEducacaoPrimaria(value);
-    await saveSliderValues(impostoPobre, impostoRico, educacaoPrimaria, value);
+  const handleSaveEducacao = async (primaria: number, medio: number, superior: number) => {
+    setEducacaoPrimaria(primaria);
+    setEnsinoMedio(medio);
+    setEnsinoSuperior(superior);
+    await saveSliderValues(impostoPobre, impostoMedio, impostoRico, primaria, medio, superior);
     setEducacaoSliderLocked(true);
   };
+
+  const calcularDespesaImpactoPopularidadeEducacao = (despesa: number, impactoPopularidade: number) => {
+    setDespesaEducacao(despesa);
+    setImpactoPopularidadeEducacao(impactoPopularidade);
+  };
+
+
 
 
 
@@ -129,9 +152,9 @@ const GameScreen = () => {
         <Text style={styles.pib}>PIB: {gameData.country.pib}</Text>
       </View>
       <View style={styles.dateBar}>
-        <Text style={styles.date}>Saldo: {saldoEconomia}</Text>
-        <Text style={styles.date}>Popularidade: {popularidade}%</Text>
-        <Text style={styles.date}>Data: {monthNames[date.month - 1]} {date.year}</Text>
+        <Text style={styles.date}> {saldoEconomia}</Text>
+        <Text style={styles.date}> {popularidade}%</Text>
+        <Text style={styles.date}> {monthNames[date.month - 1]} {date.year}</Text>
       </View>
       <View style={styles.footer}>
         <TouchableOpacity style={styles.footerButton} onPress={() => setStatsModalVisible(true)}>
@@ -205,13 +228,11 @@ const GameScreen = () => {
         onRequestClose={() => setStatsModalVisible(false)}
       >
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <EstatisticasModal
-              visible={statsModalVisible}
-              onClose={() => setStatsModalVisible(false)}
-              country={country}
-            />
-          </View>
+          <EstatisticasModal
+            visible={statsModalVisible}
+            onClose={() => setStatsModalVisible(false)}
+            country={country}
+          />
         </View>
       </Modal>
 
@@ -242,6 +263,7 @@ const GameScreen = () => {
             visible={impostoModalVisible}
             onClose={() => setImpostoModalVisible(false)}
             onSave={handleSaveImposto}
+            onCalculate={calcularReceitaImpactoPopularidadeImposto}
             initialPobre={impostoPobre}
             initialMedio={impostoMedio}
             initialRico={impostoRico}
@@ -249,7 +271,6 @@ const GameScreen = () => {
           />
         </View>
       </Modal>
-
 
       {/* Modal de Educação */}
       <Modal
@@ -263,11 +284,18 @@ const GameScreen = () => {
             visible={educacaoModalVisible}
             onClose={() => setEducacaoModalVisible(false)}
             onSave={handleSaveEducacao}
-            initialValue={educacaoPrimaria}
-            sliderLocked={educacaoSliderLocked} // Adicione esta linha
+            onCalculate={calcularDespesaImpactoPopularidadeEducacao}
+            initialPrimaria={educacaoPrimaria}
+            initialMedio={ensinoMedio}
+            initialSuperior={ensinoSuperior}
+            sliderLocked={educacaoSliderLocked}
           />
         </View>
       </Modal>
+
+
+
+
 
 
     </View>

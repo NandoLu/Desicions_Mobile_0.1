@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   },
   advanceButton: {
     position: 'absolute',
-    bottom: 10,
+    bottom: 120,
     right: 10,
     backgroundColor: '#007BFF',
     padding: 10,
