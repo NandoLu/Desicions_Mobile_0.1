@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   modalContent: {
     width: '80%', // Cobrir a tela inteira horizontalmente
     height: '80%', // Tamanho fixo
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'gray',
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',

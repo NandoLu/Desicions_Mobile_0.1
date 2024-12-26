@@ -22,34 +22,30 @@ export const advanceTurn = (date: { year: number; month: number }) => {
   return { year: newYear, month: newMonth };
 };
 
-export const calculateEconomy = (impostoPobre: number, educacaoPrimaria: number) => {
-  const receitaImposto = impostoPobre * 5;
-  const despesaEducacao = educacaoPrimaria * -5;
-  const popularidadeImposto = 5 - (impostoPobre * 0.5);
-  const popularidadeEducacao = educacaoPrimaria * 2 - 5;
-
-  const receita = receitaImposto;
-  const despesas = despesaEducacao;
-  const saldoFinal = receita + despesas;
-  const popularidade = 51 + popularidadeImposto + popularidadeEducacao;
+export const calculateEconomy = (saldoAtual: number, receitaImposto: number, despesaEducacao: number, popularidadeTotal: number) => {
+  const saldoFinal = saldoAtual + receitaImposto + despesaEducacao;
+  const popularidade = Math.max(0, Math.min(100, popularidadeTotal)).toFixed(1);
 
   return {
-    receita,
-    despesas,
     saldoFinal,
-    popularidade: Math.max(0, Math.min(100, popularidade)), // Limitar entre 0 e 100
+    popularidade: parseFloat(popularidade),
   };
 };
 
-export const saveSliderValues = async (impostoPobre: number, impostoMedio: number, impostoRico: number, educacaoPrimaria: number) => {
-  const sliderValues = { impostoPobre, educacaoPrimaria };
+
+
+
+export const saveSliderValues = async (impostoPobre: number, impostoMedio: number, impostoRico: number, educacaoPrimaria: number, ensinoMedio: number, ensinoSuperior: number) => {
+  const sliderValues = { impostoPobre, impostoMedio, impostoRico, educacaoPrimaria, ensinoMedio, ensinoSuperior };
   await AsyncStorage.setItem('sliderValues', JSON.stringify(sliderValues));
 };
+
 
 export const loadSliderValues = async () => {
   const savedValues = await AsyncStorage.getItem('sliderValues');
   if (savedValues) {
     return JSON.parse(savedValues);
   }
-  return { impostoPobre: 0, educacaoPrimaria: 0 };
+  return { impostoPobre: 0, impostoMedio: 0, impostoRico: 0, educacaoPrimaria: 0, ensinoMedio: 0, ensinoSuperior: 0 };
 };
+

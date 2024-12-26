@@ -47,7 +47,7 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/images/img.jpg')} style={styles.logo} />
+      <Image source={require('../assets/images/icon.png')} style={styles.logo} />
       <TouchableOpacity style={[styles.button, !hasSavedGame && styles.disabledButton]} disabled={!hasSavedGame} onPress={() => navigation.navigate('GameScreen')}>
         <Text style={styles.buttonText}>Continuar</Text>
       </TouchableOpacity>
