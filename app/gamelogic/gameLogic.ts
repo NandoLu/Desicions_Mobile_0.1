@@ -41,7 +41,7 @@ export const calculateEconomy = (impostoPobre: number, educacaoPrimaria: number)
   };
 };
 
-export const saveSliderValues = async (impostoPobre: number, educacaoPrimaria: number) => {
+export const saveSliderValues = async (impostoPobre: number, impostoMedio: number, impostoRico: number, educacaoPrimaria: number) => {
   const sliderValues = { impostoPobre, educacaoPrimaria };
   await AsyncStorage.setItem('sliderValues', JSON.stringify(sliderValues));
 };

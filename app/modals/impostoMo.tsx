@@ -6,36 +6,65 @@ import styles from '../../styles/ModalStyles';
 interface ImpostoModalProps {
   visible: boolean;
   onClose: () => void;
-  onSave: (impostoPobre: number) => void;
-  initialValue: number;
+  onSave: (impostoPobre: number, impostoMedio: number, impostoRico: number) => void;
+  initialPobre: number;
+  initialMedio: number;
+  initialRico: number;
+  sliderLocked: boolean;
 }
 
-const ImpostoModal: React.FC<ImpostoModalProps> = ({ visible, onClose, onSave, initialValue }) => {
-  const [impostoPobre, setImpostoPobre] = React.useState(initialValue);
+const ImpostoModal: React.FC<ImpostoModalProps> = ({ visible, onClose, onSave, initialPobre, initialMedio, initialRico, sliderLocked }) => {
+  const [impostoPobre, setImpostoPobre] = React.useState(initialPobre);
+  const [impostoMedio, setImpostoMedio] = React.useState(initialMedio);
+  const [impostoRico, setImpostoRico] = React.useState(initialRico);
 
   if (!visible) return null;
 
   return (
-      <View style={styles.modalContent}>
-        <ScrollView style={styles.scrollView}>
-          <Text style={styles.modalTitle}>Imposto</Text>
-          <Text style={styles.modalText}>Imposto sobre os pobres</Text>
-          <Slider
-            style={styles.slider}
-            minimumValue={0}
-            maximumValue={10}
-            step={1}
-            value={impostoPobre}
-            onValueChange={setImpostoPobre}
-            disabled={initialValue !== 0}
-          />
-          <Text style={styles.modalText}>Valor: {impostoPobre}</Text>
-        </ScrollView>
-        <View style={styles.buttonContainer}>
-          <Button title="Salvar" onPress={() => onSave(impostoPobre)} />
-          <Button title="Fechar" onPress={onClose} />
-        </View>
+    <View style={styles.modalContent}>
+      <ScrollView style={styles.scrollView}>
+        <Text style={styles.modalTitle}>Imposto</Text>
+        <Text style={styles.modalText}>Imposto sobre os pobres</Text>
+        <Slider
+          style={styles.slider}
+          minimumValue={0}
+          maximumValue={10}
+          step={1}
+          value={impostoPobre}
+          onValueChange={setImpostoPobre}
+          disabled={sliderLocked}
+        />
+        <Text style={styles.modalText}>Valor: {impostoPobre}</Text>
+
+        <Text style={styles.modalText}>Imposto sobre a classe média</Text>
+        <Slider
+          style={styles.slider}
+          minimumValue={0}
+          maximumValue={10}
+          step={1}
+          value={impostoMedio}
+          onValueChange={setImpostoMedio}
+          disabled={sliderLocked}
+        />
+        <Text style={styles.modalText}>Valor: {impostoMedio}</Text>
+
+        <Text style={styles.modalText}>Imposto sobre os ricos</Text>
+        <Slider
+          style={styles.slider}
+          minimumValue={0}
+          maximumValue={10}
+          step={1}
+          value={impostoRico}
+          onValueChange={setImpostoRico}
+          disabled={sliderLocked}
+        />
+        <Text style={styles.modalText}>Valor: {impostoRico}</Text>
+      </ScrollView>
+      <View style={styles.buttonContainer}>
+        <Button title="Salvar" onPress={() => onSave(impostoPobre, impostoMedio, impostoRico)} disabled={sliderLocked} />
+        <Button title="Fechar" onPress={onClose} />
       </View>
+    </View>
   );
 };
 

@@ -29,7 +29,7 @@ const GameScreen = () => {
     console.error('Parâmetros "country" e "leader" não foram fornecidos.');
     return (
       <View style={styles.container}>
-        <Text style={styles.error}>Erro: Dados do jogo estão incompletos.</Text>
+        <Text>Erro: Dados do jogo estão incompletos.</Text>
       </View>
     );
   }
@@ -47,8 +47,11 @@ const GameScreen = () => {
   const [impostoModalVisible, setImpostoModalVisible] = useState(false);
   const [educacaoModalVisible, setEducacaoModalVisible] = useState(false);
   const [impostoPobre, setImpostoPobre] = useState(0);
+  const [impostoMedio, setImpostoMedio] = useState(0);
+  const [impostoRico, setImpostoRico] = useState(0);
   const [educacaoPrimaria, setEducacaoPrimaria] = useState(0);
-  const [slidersLocked, setSlidersLocked] = useState(false);
+  const [impostoSliderLocked, setImpostoSliderLocked] = useState(false);
+  const [educacaoSliderLocked, setEducacaoSliderLocked] = useState(false);
   const [saldoEconomia, setSaldoEconomia] = useState(0);
   const [popularidade, setPopularidade] = useState(51);
 
@@ -92,20 +95,26 @@ const GameScreen = () => {
     setGameData(updatedGameData);
     await saveGame(updatedGameData);
 
-    setSlidersLocked(false);
+    setImpostoSliderLocked(false);
+    setEducacaoSliderLocked(false);
   };
 
-  const handleSaveImposto = async (value: number) => {
-    setImpostoPobre(value);
-    await saveSliderValues(value, educacaoPrimaria);
-    setSlidersLocked(true);
-  };
+  const handleSaveImposto = async (pobre: number, medio: number, rico: number) => {
+    setImpostoPobre(pobre);
+    setImpostoMedio(medio);
+    setImpostoRico(rico);
+    await saveSliderValues(pobre, medio, rico, educacaoPrimaria);
+    setImpostoSliderLocked(true);
+  };  
+
 
   const handleSaveEducacao = async (value: number) => {
     setEducacaoPrimaria(value);
-    await saveSliderValues(impostoPobre, value);
-    setSlidersLocked(true);
+    await saveSliderValues(impostoPobre, impostoRico, educacaoPrimaria, value);
+    setEducacaoSliderLocked(true);
   };
+
+
 
   const monthNames = [
     "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -233,10 +242,14 @@ const GameScreen = () => {
             visible={impostoModalVisible}
             onClose={() => setImpostoModalVisible(false)}
             onSave={handleSaveImposto}
-            initialValue={impostoPobre}
+            initialPobre={impostoPobre}
+            initialMedio={impostoMedio}
+            initialRico={impostoRico}
+            sliderLocked={impostoSliderLocked}
           />
         </View>
       </Modal>
+
 
       {/* Modal de Educação */}
       <Modal
@@ -251,9 +264,12 @@ const GameScreen = () => {
             onClose={() => setEducacaoModalVisible(false)}
             onSave={handleSaveEducacao}
             initialValue={educacaoPrimaria}
+            sliderLocked={educacaoSliderLocked} // Adicione esta linha
           />
         </View>
       </Modal>
+
+
     </View>
   );
 };
